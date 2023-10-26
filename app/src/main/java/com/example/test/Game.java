@@ -22,6 +22,8 @@ import java.util.ArrayList;
 
 public class Game extends SurfaceView implements SurfaceHolder.Callback {
 
+    private Long wood;
+
     private GameLoop gameLoop;
     private Context context;
 
@@ -50,13 +52,15 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
 
         // init
 
+        this.wood = 0l;
+
         this.camera = new Camera(width, height);
 
         this.houses = new ArrayList<>();
         this.woodChuckers = new ArrayList<>();
 
-        houses.add(new House(700, 1500, 5));
-        woodChuckers.add(new WoodChucker(700, 1500, houses.get(0), this.camera));
+        houses.add(new House(700, 1500, 5, camera));
+        woodChuckers.add(new WoodChucker(700, 1500, houses.get(0), this.camera, this));
 
     }
     @Override
@@ -75,10 +79,10 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
     }
 
 
-    public void update() {
+    public void update(long now) {
 
         for(GameObject woodChucker: woodChuckers) {
-            woodChucker.update();
+            woodChucker.update(now);
         }
 
     }
@@ -97,12 +101,20 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
         }
 
 
-
+        drawWood(canvas);
         drawUPS(canvas);
         drawFPS(canvas);
         drawRes(canvas);
     }
 
+
+    public void drawWood(Canvas canvas) {
+        Paint paint = new Paint();
+        int color = Color.WHITE;
+        paint.setColor(color);
+        paint.setTextSize(70);
+        canvas.drawText("Wood: " + this.wood, width/2, 90, paint);
+    }
     public void drawRes(Canvas canvas) {
         Paint paint = new Paint();
         int color = Color.RED;
@@ -124,5 +136,13 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
         int color = Color.RED;
         paint.setColor(color);
         canvas.drawText("FPS: " + averageUPS, 100, 60, paint);
+    }
+
+    public Long getWood() {
+        return wood;
+    }
+
+    public void setWood(Long wood) {
+        this.wood = wood;
     }
 }
