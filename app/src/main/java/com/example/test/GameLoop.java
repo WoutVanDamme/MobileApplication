@@ -81,7 +81,9 @@ public class GameLoop extends Thread{
                 }
 
                 surfaceHolder.unlockCanvasAndPost(canvas);
-            }catch (Exception e) {}
+            }catch (IllegalArgumentException e) {
+
+            }
 
         }
 
