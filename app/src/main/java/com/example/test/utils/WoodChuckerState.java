@@ -5,6 +5,7 @@ public enum WoodChuckerState {
     WALKING_TO_FOREST,
     COLLECTING_WOOD,
     WALKING_HOME,
-    RESTING
+    RESTING,
+    RETURN
 
 }

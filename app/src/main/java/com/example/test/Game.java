@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
@@ -16,6 +17,8 @@ import androidx.core.content.ContextCompat;
 import com.example.test.GameObjects.GameObject;
 import com.example.test.GameObjects.House;
 import com.example.test.GameObjects.WoodChucker;
+import com.example.test.UI.ShopButton;
+import com.example.test.UI.UIElement;
 import com.example.test.utils.Camera;
 
 import java.util.ArrayList;
@@ -30,6 +33,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
     private int width, height;
 
     private Camera camera;
+    private ArrayList<UIElement> uiElements;
     private ArrayList<House> houses;
     private ArrayList<WoodChucker> woodChuckers;
 
@@ -56,12 +60,13 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
 
         this.camera = new Camera(width, height);
 
+        this.uiElements = new ArrayList<>();
         this.houses = new ArrayList<>();
         this.woodChuckers = new ArrayList<>();
 
-        houses.add(new House(700, 1500, 5, camera));
-        woodChuckers.add(new WoodChucker(700, 1500, houses.get(0), this.camera, this));
+        uiElements.add(new ShopButton(100, 1800, camera));
 
+        houses.add(new House(700, 1500, 5, camera, woodChuckers, this));
     }
     @Override
     public void surfaceCreated(@NonNull SurfaceHolder holder) {
@@ -100,6 +105,9 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
             house.render(canvas);
         }
 
+        for(UIElement element: uiElements) {
+            element.render(canvas);
+        }
 
         drawWood(canvas);
         drawUPS(canvas);
@@ -136,6 +144,36 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
         int color = Color.RED;
         paint.setColor(color);
         canvas.drawText("FPS: " + averageUPS, 100, 60, paint);
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+
+        for(UIElement element: uiElements) {
+
+            int x = (int)event.getX();
+            int y = (int)event.getY();
+
+            if(x > element.getTX() && x < element.getTX() + element.getWidth() && y > element.getTY() && y < element.getTY()+element.getHeight()) {
+                element.event(event);
+                return true;
+            }
+
+
+        }
+        /*
+        switch (event.getAction()) {
+
+            case MotionEvent.ACTION_DOWN:
+                //(int)event.getX(), (int)event.getY();
+                return true;
+            case MotionEvent.ACTION_MOVE:
+                return true;
+            case MotionEvent.ACTION_UP:
+                return true;
+        }
+         */
+        return super.onTouchEvent(event);
     }
 
     public Long getWood() {

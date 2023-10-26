@@ -21,12 +21,13 @@ public class WoodChucker extends GameObject{
     private Game game;
 
     private long last;
+    private int rest;
 
     // TEMP
     int size = 64;
     private Paint paint;
 
-    public WoodChucker(int x, int y, House house, Camera camera, Game game) {
+    public WoodChucker(int x, int y, House house, Camera camera, Game game, int rest) {
         this.x = x;
         this.y = y;
         this.house = house;
@@ -38,15 +39,20 @@ public class WoodChucker extends GameObject{
         this.camera = camera;
         this.game = game;
 
-        this.last = -1;
+        this.last = -69;
+
+        this.rest = rest;
     }
     @Override
     public void update(long now) {
 
         switch(this.state) {
             case RESTING:
-                // wait
+                Wait(now, rest*575, WoodChuckerState.WALKING_TO_FOREST);
+                break;
+            case RETURN:
                 this.game.setWood(this.game.getWood() + 1);
+                //Wait(now, 100, WoodChuckerState.WALKING_TO_FOREST);
                 this.state = WoodChuckerState.WALKING_TO_FOREST;
                 break;
             case COLLECTING_WOOD:
@@ -77,29 +83,30 @@ public class WoodChucker extends GameObject{
         if(this.y <= 0) {
             this.state = WoodChuckerState.COLLECTING_WOOD;
         }else {
-            this.y -= 10;
+            this.y -= 3;
         }
     }
 
     private void WalkHome() {
 
         if(this.y < this.house.getY()) {
-            this.y += 10;
+            this.y += 3;
         }
         else {
-            this.state = WoodChuckerState.RESTING;
+            this.state = WoodChuckerState.RETURN;
         }
     }
 
     private void Wait(long now, long time, WoodChuckerState state) {
-        if(last == -1) {
+
+
+        if(last == -69) {
             last = now;
-        }else{
-            if(now-last > time) {
-                this.state = state;
-                last = -1;
-            }
         }
 
+        if(now-last > time) {
+            this.state = state;
+            last = -69;
+        }
     }
 }

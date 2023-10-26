@@ -44,11 +44,14 @@ public class GameLoop extends Thread{
 
         float deltaTime = 0f;
 
-        long now = 0;
         long now1;
 
         long start = System.currentTimeMillis();
         long beg = System.nanoTime();
+
+
+        long now = start;
+
 
         while (running) {
             try {
