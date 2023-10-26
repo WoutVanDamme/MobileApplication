@@ -5,32 +5,29 @@ import android.view.SurfaceHolder;
 
 public class GameLoop extends Thread{
 
-    private Game game;
+    private boolean running = false;
     private SurfaceHolder surfaceHolder;
+    private Game game;
 
-    private boolean isRunning = false;
-    private double averageUPS;
-    private double averageFPS;
+    private double avUPS = 0;
+    private double avFPS = 0;
+
 
     public GameLoop(Game game, SurfaceHolder surfaceHolder) {
         this.game = game;
         this.surfaceHolder = surfaceHolder;
-
-        this.averageFPS = 0;
-        this.averageUPS = 0;
     }
 
     public double getAverageUPS() {
-        return averageUPS;
+        return this.avUPS;
     }
 
     public double getAverageFPS() {
-        return averageFPS;
+        return this.avFPS;
     }
 
-
     public void startLoop() {
-        isRunning = true;
+        running = true;
         start();
     }
 
@@ -38,43 +35,56 @@ public class GameLoop extends Thread{
     public void run() {
         super.run();
 
-        int updateCount = 0;
-        int frameCount = 0;
-
-        long elapsedTime = System.currentTimeMillis();
-        long startTime = System.currentTimeMillis();
-        long now;
+        int ticks = 0;
+        int upd = 0;
 
         Canvas canvas;
-        while(isRunning) {
 
+        final float tps = 1000000000/60;
+
+        float deltaTime = 0f;
+
+        long now1;
+
+        long start = System.currentTimeMillis();
+        long beg = System.nanoTime();
+
+        while (running) {
             try {
                 canvas = surfaceHolder.lockCanvas();
 
-                updateCount++;
-                game.update();
 
-                frameCount++;
-                game.draw(canvas);
+                game.draw(canvas); upd++;
+
+
+                now1 = System.nanoTime();
+                deltaTime += now1-beg;
+                beg = now1;
+
+                while(deltaTime > tps) {
+                    game.update(); ticks++;
+                    deltaTime -= tps;
+                }
+
+
+
+
+
+                long now =System.currentTimeMillis();
+                if(now-start > 1000) {
+                    this.avUPS = ticks;
+                    this.avFPS = upd;
+                    ticks = 0;
+                    upd = 0;
+
+                    start = now;
+                }
 
                 surfaceHolder.unlockCanvasAndPost(canvas);
+            }catch (Exception e) {}
 
-            }catch(IllegalArgumentException e) {
-                e.printStackTrace();
-            }
-
-
-
-
-            now = System.currentTimeMillis();
-            elapsedTime = now - startTime;
-            if (elapsedTime >= 1000) {
-                averageFPS = frameCount / (1E-3 * elapsedTime);
-                averageUPS = updateCount / (1E-3 * elapsedTime);
-                frameCount = 0;
-                updateCount = 0;
-                startTime = now;
-            }
         }
+
+
     }
 }

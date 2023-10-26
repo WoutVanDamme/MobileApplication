@@ -25,7 +25,6 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
 
         setFocusable(true);
     }
-
     @Override
     public void surfaceCreated(@NonNull SurfaceHolder holder) {
         gameLoop.startLoop();
