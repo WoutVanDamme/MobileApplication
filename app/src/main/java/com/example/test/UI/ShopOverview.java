@@ -4,9 +4,12 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.util.Log;
 import android.view.MotionEvent;
 
 import com.example.test.utils.Camera;
+
+import java.util.ArrayList;
 
 public class ShopOverview extends UIElement{
 
@@ -14,7 +17,10 @@ public class ShopOverview extends UIElement{
     private int width = 800, height = 1800;
     private Camera camera;
 
-    private boolean show;
+    private boolean active = false;
+
+    private ArrayList<UIElement> elements;
+
 
     private Paint paint;
     public ShopOverview(int x, int y, Camera camera) {
@@ -22,10 +28,13 @@ public class ShopOverview extends UIElement{
         this.y = y;
         this.camera = camera;
 
-        this.show = false;
 
         this.paint = new Paint();
         this.paint.setColor(Color.GRAY);
+
+        this.elements = new ArrayList<>();
+        this.elements.add(new ShopCloseButton(this.x+this.width-128, this.y,camera, this));
+
     }
 
     @Override
@@ -37,17 +46,24 @@ public class ShopOverview extends UIElement{
     public void render(Canvas canvas) {
         Rect rect = new Rect(camera.TransformX(this.x), camera.TransformY(this.y), camera.TransformX(this.x+this.width), camera.TransformY(this.y+this.height));
         canvas.drawRect(rect, this.paint);
+        for(UIElement elem: elements) {
+            if(elem.isActive())
+                elem.render(canvas);
+        }
     }
 
     @Override
     public void event(MotionEvent event) {
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                return;
-            case MotionEvent.ACTION_MOVE:
-                return;
-            case MotionEvent.ACTION_UP:
-                return;
+        Log.d("test-ui", "testing");
+
+        for(UIElement element: elements) {
+
+            int x = (int)event.getX();
+            int y = (int)event.getY();
+
+            if(element.isActive() && x > element.getTX() && x < element.getTX() + element.getWidth() && y > element.getTY() && y < element.getTY()+element.getHeight()) {
+                element.event(event);
+            }
         }
     }
 
@@ -71,13 +87,17 @@ public class ShopOverview extends UIElement{
         return this.height;
     }
 
-
-    public void setShow(boolean x) {
-        this.show = x;
+    @Override
+    public void setActive(boolean x) {
+        active=x;
     }
 
-    public boolean getShow() {
-        return this.show;
+    @Override
+    public boolean isActive() {
+        return active;
     }
+
+
+
 
 }

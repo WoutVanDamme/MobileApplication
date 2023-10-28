@@ -18,6 +18,8 @@ import com.example.test.GameObjects.GameObject;
 import com.example.test.GameObjects.House;
 import com.example.test.GameObjects.WoodChucker;
 import com.example.test.UI.ShopButton;
+import com.example.test.UI.ShopCloseButton;
+import com.example.test.UI.ShopOverview;
 import com.example.test.UI.UIElement;
 import com.example.test.utils.Camera;
 
@@ -64,9 +66,14 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
         this.houses = new ArrayList<>();
         this.woodChuckers = new ArrayList<>();
 
-        uiElements.add(new ShopButton(100, 1800, camera));
+        ShopOverview shopOverview = new ShopOverview(100, 100, camera);
+        ShopButton shopButton = new ShopButton(100, 1800, camera, shopOverview);
 
-        houses.add(new House(700, 1500, 5, camera, woodChuckers, this));
+        uiElements.add(shopButton);
+        uiElements.add(shopOverview);
+
+
+        houses.add(new House(700, 1500, 10, camera, woodChuckers, this));
     }
     @Override
     public void surfaceCreated(@NonNull SurfaceHolder holder) {
@@ -106,7 +113,9 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
         }
 
         for(UIElement element: uiElements) {
-            element.render(canvas);
+            if(element.isActive()){
+                element.render(canvas);
+            }
         }
 
         drawWood(canvas);
@@ -148,31 +157,19 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-
+        //Log.d("test-ui", "registered touch event");
         for(UIElement element: uiElements) {
+
 
             int x = (int)event.getX();
             int y = (int)event.getY();
 
-            if(x > element.getTX() && x < element.getTX() + element.getWidth() && y > element.getTY() && y < element.getTY()+element.getHeight()) {
+            if(element.isActive() && x > element.getTX() && x < element.getTX() + element.getWidth() && y > element.getTY() && y < element.getTY()+element.getHeight()) {
+                Log.d("test-ui", "event on active uiElement");
                 element.event(event);
-                return true;
             }
 
-
         }
-        /*
-        switch (event.getAction()) {
-
-            case MotionEvent.ACTION_DOWN:
-                //(int)event.getX(), (int)event.getY();
-                return true;
-            case MotionEvent.ACTION_MOVE:
-                return true;
-            case MotionEvent.ACTION_UP:
-                return true;
-        }
-         */
         return super.onTouchEvent(event);
     }
 

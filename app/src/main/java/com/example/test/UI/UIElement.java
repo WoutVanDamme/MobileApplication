@@ -15,4 +15,7 @@ public abstract class UIElement {
 
     public abstract int getWidth();
     public abstract int getHeight();
+
+    public abstract void setActive(boolean x);
+    public abstract boolean isActive();
 }

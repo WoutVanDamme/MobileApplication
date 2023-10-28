@@ -12,22 +12,22 @@ import com.example.test.utils.Camera;
 public class ShopCloseButton extends UIElement{
 
     private int x, y;
-    private int width = 32, height = 32;
+    private int width = 128, height = 128;
     private Camera camera;
 
     private ShopOverview shopOverview;
 
     //TEMP
     private Paint paint;
-    public ShopCloseButton(int x, int y, Camera camera) {
+    public ShopCloseButton(int x, int y, Camera camera, ShopOverview shopOverview) {
         this.x = x;
         this.y = y;
         this.camera = camera;
 
         this.paint = new Paint();
-        this.paint.setColor(Color.GREEN);
+        this.paint.setColor(Color.RED);
 
-        this.shopOverview = new ShopOverview(100,100, camera);
+        this.shopOverview = shopOverview;
     }
 
     public void update(long now) {
@@ -36,32 +36,29 @@ public class ShopCloseButton extends UIElement{
 
     public void render(Canvas canvas) {
 
-        if(shopOverview.getShow()) {
-            shopOverview.render(canvas);
-        }else {
 
-            Rect rect = new Rect(camera.TransformX(this.x), camera.TransformY(this.y), camera.TransformX(this.x+this.width), camera.TransformY(this.y+this.height));
-            canvas.drawRect(rect, this.paint);
-        }
+        Rect rect = new Rect(camera.TransformX(this.x), camera.TransformY(this.y), camera.TransformX(this.x+this.width), camera.TransformY(this.y+this.height));
+        canvas.drawRect(rect, this.paint);
+
 
     }
 
     @Override
     public void event(MotionEvent event) {
 
-        if(shopOverview.getShow()) {
-            shopOverview.event(event);
-        }else {
-            switch (event.getAction()) {
-                case MotionEvent.ACTION_DOWN:
-                    return;
-                case MotionEvent.ACTION_MOVE:
-                    return;
-                case MotionEvent.ACTION_UP:
-                    shopOverview.setShow(true);
-                    return;
-            }
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                Log.d("test-ui", "exit");
+                shopOverview.setActive(false);
+                return;
+            case MotionEvent.ACTION_MOVE:
+                return;
+            case MotionEvent.ACTION_UP:
+                Log.d("test-ui", "exit");
+                shopOverview.setActive(false);
+                return;
         }
+
 
     }
 
@@ -83,6 +80,16 @@ public class ShopCloseButton extends UIElement{
     @Override
     public int getHeight() {
         return this.height;
+    }
+
+    @Override
+    public void setActive(boolean x) {
+
+    }
+
+    @Override
+    public boolean isActive() {
+        return true;
     }
 
 }

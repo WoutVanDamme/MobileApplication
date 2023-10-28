@@ -19,7 +19,7 @@ public class ShopButton extends UIElement{
 
     //TEMP
     private Paint paint;
-    public ShopButton(int x, int y, Camera camera) {
+    public ShopButton(int x, int y, Camera camera, ShopOverview shopOverview) {
         this.x = x;
         this.y = y;
         this.camera = camera;
@@ -27,7 +27,7 @@ public class ShopButton extends UIElement{
         this.paint = new Paint();
         this.paint.setColor(Color.GREEN);
 
-        this.shopOverview = new ShopOverview(100,100, camera);
+        this.shopOverview = shopOverview;
     }
 
     public void update(long now) {
@@ -36,10 +36,7 @@ public class ShopButton extends UIElement{
 
     public void render(Canvas canvas) {
 
-        if(shopOverview.getShow()) {
-            shopOverview.render(canvas);
-        }else {
-
+        if(!shopOverview.isActive()) {
             Rect rect = new Rect(camera.TransformX(this.x), camera.TransformY(this.y), camera.TransformX(this.x+this.width), camera.TransformY(this.y+this.height));
             canvas.drawRect(rect, this.paint);
         }
@@ -48,17 +45,19 @@ public class ShopButton extends UIElement{
 
     @Override
     public void event(MotionEvent event) {
+        Log.d("test-ui", "shop button event {overview: "+ shopOverview.isActive() + "}");
 
-        if(shopOverview.getShow()) {
-            shopOverview.event(event);
-        }else {
+        if(!shopOverview.isActive()) {
             switch (event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
+                    Log.d("test-ui", "open shop overview");
+                    shopOverview.setActive(true);
                     return;
                 case MotionEvent.ACTION_MOVE:
                     return;
                 case MotionEvent.ACTION_UP:
-                    shopOverview.setShow(true);
+                    //Log.d("test-ui", "open shop overview");
+                    //shopOverview.setActive(true);
                     return;
             }
         }
@@ -83,6 +82,16 @@ public class ShopButton extends UIElement{
     @Override
     public int getHeight() {
         return this.height;
+    }
+
+    @Override
+    public void setActive(boolean x) {
+
+    }
+
+    @Override
+    public boolean isActive() {
+        return true;
     }
 
 }
