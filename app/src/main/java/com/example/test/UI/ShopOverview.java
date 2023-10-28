@@ -61,7 +61,7 @@ public class ShopOverview extends UIElement{
             int x = (int)event.getX();
             int y = (int)event.getY();
 
-            if(element.isActive() && x > element.getTX() && x < element.getTX() + element.getWidth() && y > element.getTY() && y < element.getTY()+element.getHeight()) {
+            if(element.isActive() && x > element.getTX() && x < element.getTRight() && y > element.getTY() && y < element.getTBottom()) {
                 element.event(event);
             }
         }
@@ -75,6 +75,16 @@ public class ShopOverview extends UIElement{
     @Override
     public int getTY() {
         return this.camera.TransformY(this.y);
+    }
+
+    @Override
+    public int getTRight() {
+        return camera.TransformX(x+width);
+    }
+
+    @Override
+    public int getTBottom() {
+        return camera.TransformY(y+height);
     }
 
     @Override

@@ -67,7 +67,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
         this.woodChuckers = new ArrayList<>();
 
         ShopOverview shopOverview = new ShopOverview(100, 100, camera);
-        ShopButton shopButton = new ShopButton(100, 1800, camera, shopOverview);
+        ShopButton shopButton = new ShopButton(100, 1800, camera, shopOverview, this);
 
         uiElements.add(shopButton);
         uiElements.add(shopOverview);
@@ -164,7 +164,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
             int x = (int)event.getX();
             int y = (int)event.getY();
 
-            if(element.isActive() && x > element.getTX() && x < element.getTX() + element.getWidth() && y > element.getTY() && y < element.getTY()+element.getHeight()) {
+            if(element.isActive() && x > element.getTX() && x < element.getTRight() && y > element.getTY() && y < element.getTBottom()) {
                 Log.d("test-ui", "event on active uiElement");
                 element.event(event);
             }

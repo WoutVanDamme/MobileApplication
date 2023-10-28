@@ -35,12 +35,8 @@ public class ShopCloseButton extends UIElement{
     }
 
     public void render(Canvas canvas) {
-
-
         Rect rect = new Rect(camera.TransformX(this.x), camera.TransformY(this.y), camera.TransformX(this.x+this.width), camera.TransformY(this.y+this.height));
         canvas.drawRect(rect, this.paint);
-
-
     }
 
     @Override
@@ -70,6 +66,16 @@ public class ShopCloseButton extends UIElement{
     @Override
     public int getTY() {
         return camera.TransformY(y);
+    }
+
+    @Override
+    public int getTRight() {
+        return camera.TransformX(x+width);
+    }
+
+    @Override
+    public int getTBottom() {
+        return camera.TransformY(y+height);
     }
 
     @Override

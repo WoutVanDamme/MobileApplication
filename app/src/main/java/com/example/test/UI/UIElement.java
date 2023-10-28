@@ -13,6 +13,9 @@ public abstract class UIElement {
     public abstract int getTX();
     public abstract int getTY();
 
+    public abstract int getTRight();
+    public abstract int getTBottom();
+
     public abstract int getWidth();
     public abstract int getHeight();
 
