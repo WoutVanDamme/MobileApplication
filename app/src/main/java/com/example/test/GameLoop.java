@@ -62,14 +62,11 @@ public class GameLoop extends Thread{
 
 
                 now1 = System.nanoTime();
-                deltaTime += now1-beg;
-                beg = now1;
-
-                while(deltaTime > tps) {
+                if(now1-beg+deltaTime > tps) {
                     game.update(now); ticks++;
-                    deltaTime -= tps;
+                    deltaTime = (now1-beg+deltaTime)-tps;
+                    beg = now1;
                 }
-
 
 
 
